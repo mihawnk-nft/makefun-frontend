@@ -1,8 +1,8 @@
 # make.fun frontend
 
-[![Bounty: makefun-frontend-01](https://img.shields.io/badge/bounty-makefun--frontend--01-blue)](https://make.fun/c/makefun-frontend-01)
-[![Prize: $500 + fees](https://img.shields.io/badge/prize-%24500%20%2B%20fees-green)](https://make.fun/c/makefun-frontend-01)
-[![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![make.fun · makefun-frontend-01](https://make.fun/badge/makefun-frontend-01.svg)](https://make.fun/bounty/makefun-frontend-01?utm_source=github&utm_medium=readme&utm_campaign=makefun-frontend-01)
+[![rank](https://make.fun/badge/makefun-frontend-01/mihawnk-nft/makefun-frontend/rank.svg)](https://make.fun/bounty/makefun-frontend-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=makefun-frontend-01)
+[![reward](https://make.fun/badge/makefun-frontend-01/mihawnk-nft/makefun-frontend/reward.svg)](https://make.fun/bounty/makefun-frontend-01?utm_source=github&utm_medium=readme&utm_campaign=makefun-frontend-01)
 
 A fast, lean frontend for [make.fun](https://make.fun/c/makefun-frontend-01) — built for the [makefun-frontend-01 bounty](https://make.fun/c/makefun-frontend-01). Static files, no build step, no framework: it reads make.fun's public API alone (GET, CORS open) and shows the four surfaces a visitor needs — the live bounty board, a bounty's page, its leaderboard, and an account's public profile — each reachable by a link and by its own URL (hash routes).
 
