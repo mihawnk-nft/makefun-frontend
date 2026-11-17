@@ -1,29 +1,28 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="A fast make.fun frontend: live bounties, bounty pages, leaderboards and public profiles.">
-<title>make.fun — live bounties</title>
-<link rel="stylesheet" href="style.css">
-<script type="module" src="main.js"></script>
+<title>Live bounties — make.fun frontend</title>
+<meta name="description" content="A fast, lean frontend for make.fun: live bounty board, bounty pages, leaderboards and public profiles, on make.fun's public API.">
+<link rel="stylesheet" href="./style.css">
 </head>
 <body>
 <header class="top">
-  <div class="wrap top-in">
-    <a class="brand" href="#/">make<span>.fun</span> <em>live</em></a>
-    <nav class="top-nav" aria-label="Sections">
-      <a href="#/" data-nav="board">Bounties</a>
-      <a href="#/closed" data-nav="closed">Closed</a>
+  <div class="wrap top-inner">
+    <a class="brand" href="#/">make.fun <span>frontend</span></a>
+    <nav aria-label="Main">
+      <a href="#/">Bounties</a>
+      <a href="#/closed">Closed</a>
     </nav>
-    <form class="top-search" id="top-search" role="search">
-      <input id="top-q" type="search" placeholder="Search a bounty…" aria-label="Search bounties" autocomplete="off">
-    </form>
   </div>
 </header>
-<main id="app" class="wrap"><p class="loading">Loading live bounties…</p></main>
-<footer class="wrap foot">
-  <p>Read-only frontend for <a href="https://make.fun">make.fun</a> — data from the public API, refreshed live. No sign-in, no writes.</p>
+<main id="view" class="wrap"><p class="loading">Loading…</p></main>
+<footer class="foot">
+  <div class="wrap">
+    <p>Unofficial client. Data comes from <a href="https://make.fun">make.fun</a>'s public API, read-only — no sign-in, no writes. Source: <a href="https://github.com/mihawnk-nft/makefun-frontend">github.com/mihawnk-nft/makefun-frontend</a>.</p>
+  </div>
 </footer>
+<script type="module" src="./main.js"></script>
 </body>
 </html>

@@ -1,80 +1,74 @@
-// Small helpers for showing API values. No dependencies.
+// Formatting helpers for the make.fun frontend.
+// Money, numbers, dates and HTML escaping, kept dependency-free.
 
-/** Text made safe to put inside HTML. */
-export function esc(value) {
-  return String(value ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const usdInt = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
+const usdExact = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+const intFmt = new Intl.NumberFormat("en-US");
+
+/** Format a dollar amount: "$1,325" for whole dollars, "$12.50" otherwise. */
+export function money(n) {
+  const v = Number(n);
+  if (!Number.isFinite(v)) return "—";
+  return Number.isInteger(v) ? usdInt.format(v) : usdExact.format(v);
 }
 
-/** A dollar amount ('1000.00', 250 or null) as '$1,000', '$0.50' or '—'. */
-export function money(value) {
-  if (value === null || value === undefined || value === '') return '—';
-  const n = Number(value);
-  if (!Number.isFinite(n)) return '—';
-  return n.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: Number.isInteger(n) ? 0 : 2,
-    maximumFractionDigits: 2,
+/** Format a plain count with thousands separators: 75,764. */
+export function num(n) {
+  const v = Number(n);
+  if (!Number.isFinite(v)) return "—";
+  return intFmt.format(Math.trunc(v));
+}
+
+/** Human time left until an ISO deadline: "27d 5h left", "42m left", "Ended". */
+export function timeLeft(iso) {
+  const ms = new Date(iso).getTime() - Date.now();
+  if (!Number.isFinite(ms) || ms <= 0) return "Ended";
+  const min = Math.floor(ms / 60000);
+  if (min < 60) return min + "m left";
+  const hrs = Math.floor(min / 60);
+  if (hrs < 48) return hrs + "h " + (min % 60) + "m left";
+  const days = Math.floor(hrs / 24);
+  return days + "d " + (hrs % 24) + "h left";
+}
+
+/** Short date + time for an ISO timestamp, e.g. "Nov 24, 2026, 5:00 PM". */
+export function dateStr(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
   });
 }
 
-/** A plain number with thousands separators. */
-export function num(value) {
-  const n = Number(value);
-  return Number.isFinite(n) ? n.toLocaleString('en-US') : '—';
+/** Escape a string for safe use inside HTML text. */
+export function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  })[c]);
 }
 
-/** A deadline as a date in UTC. */
-export function date(iso) {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '—';
-  return `${d.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' })} UTC`;
-}
-
-/** A date as '13 Nov 2026'. */
-export function shortDate(iso) {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '—';
-  return d.toLocaleString('en-US', { dateStyle: 'medium', timeZone: 'UTC' });
-}
-
-/** The time until a deadline: '2d 4h left', '35m left', or 'ended'. */
-export function timeLeft(iso) {
-  const ms = new Date(iso).getTime() - Date.now();
-  if (ms <= 0) return 'ended';
-  const days = Math.floor(ms / 86400000);
-  const hours = Math.floor((ms % 86400000) / 3600000);
-  const minutes = Math.floor((ms % 3600000) / 60000);
-  if (days > 0) return `${days}d ${hours}h left`;
-  if (hours > 0) return `${hours}h ${minutes}m left`;
-  return `${minutes}m left`;
-}
-
-/**
- * A bounty's real state. A bounty past its deadline may still read status
- * open until its results are published, so the deadline decides, not the
- * status alone.
- */
-export function bountyState(b) {
-  const past = new Date(b.deadline).getTime() <= Date.now();
-  if (past) return { key: 'ended', label: 'Ended' };
-  const ms = new Date(b.deadline).getTime() - Date.now();
-  if (ms < 24 * 3600000) return { key: 'soon', label: 'Closing soon' };
-  return { key: 'open', label: 'Open' };
-}
-
-/** 'Open · still taking entries' / 'Ended · no longer taking entries'. */
-export function acceptingLabel(b) {
-  const past = new Date(b.deadline).getTime() <= Date.now();
-  if (past) return 'Ended — no longer taking entries';
-  if (b.acceptingSubmissions === false) return 'Not accepting entries right now';
-  return 'Open — still taking entries';
-}
-
-/** A score value: prefer the API's display string, fall back to the raw value. */
-export function scoreText(entry, key) {
-  const shown = entry.display && entry.display[key];
-  if (shown !== undefined && shown !== null && shown !== '') return String(shown);
-  const raw = entry.values && entry.values[key];
-  return raw === undefined || raw === null ? '—' : String(raw);
+/** True when the ISO deadline has passed. */
+export function isPast(iso) {
+  const t = new Date(iso).getTime();
+  return Number.isFinite(t) && t <= Date.now();
 }
